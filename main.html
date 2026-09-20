@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Happy birthday</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400..500&display=swap" rel="stylesheet">
+
+  <script src="config.js"></script>
+  <script>
+    // Keep this page closed until the unlock time.
+    // ?preview lets you look at it early. ?test comes from the test countdown.
+    (function () {
+      var p = new URLSearchParams(location.search);
+      var open = Date.now() >= new Date(window.CAPSULE.unlockAt).getTime() || p.has("preview") || p.has("test");
+      if (!open) location.replace("index.html");
+    })();
+  </script>
+
+  <style>
+    :root {
+      --head: "Marcellus", Georgia, "Times New Roman", serif;
+      --text: "Newsreader", Georgia, "Times New Roman", serif;
+      --ground-h: clamp(64px, 10vw, 140px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html { background: #000; color: #e8ebff; -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      font-family: var(--text);
+      font-size: 1.2rem;
+      line-height: 1.7;
+      background: #000;
+    }
+
+    /* ---------- The sky ---------- */
+    #sky {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 0;
+    }
+
+    .moon {
+      position: fixed;
+      top: clamp(0rem, 3vh, 2.5rem);
+      right: clamp(0rem, 5vw, 6rem);
+      width: clamp(160px, 30vw, 280px);
+      height: auto;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .ground {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--ground-h);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* faint glow on the horizon behind the trees */
+    .ground::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 280%;
+      background: linear-gradient(to top, rgba(48, 70, 160, 0.32), transparent);
+    }
+
+    .ground svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    /* ---------- Content ---------- */
+    .page { position: relative; z-index: 2; }
+
+    .hero {
+      min-height: 82svh;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 1rem;
+      padding: 5rem 1.25rem 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--head);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    .hb {
+      display: block;
+      font-size: clamp(1.5rem, 5vw, 2.6rem);
+      letter-spacing: 0.06em;
+      color: #cdd4f5;
+    }
+
+    .nm {
+      display: block;
+      margin-top: 0.3em;
+      font-size: clamp(3rem, 14vw, 8.2rem);
+      letter-spacing: 0.01em;
+      color: #fff;
+      text-shadow: 0 0 28px rgba(150, 130, 255, 0.55), 0 0 80px rgba(120, 150, 255, 0.25);
+      overflow-wrap: anywhere;
+    }
+
+    .lede {
+      margin: 1.25rem 0 0;
+      font-style: italic;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      color: #cdd4f5;
+      text-shadow: 0 1px 12px #000;
+    }
+
+    .letter {
+      width: min(100% - 2.5rem, 38rem);
+      margin: 0 auto;
+      padding: 3rem 0 2rem;
+    }
+
+    .letter p {
+      margin: 0 0 1.4em;
+      font-size: clamp(1.2rem, 2.6vw, 1.4rem);
+      line-height: 1.75;
+      color: #e8ebff;
+      text-shadow: 0 1px 14px rgba(0, 0, 0, 0.9);
+    }
+
+    .letter .greeting {
+      font-family: var(--head);
+      font-size: clamp(1.5rem, 3.4vw, 1.9rem);
+      color: #fff;
+    }
+
+    .letter .sign { margin: 2.2em 0 0.1em; font-style: italic; }
+    .letter .from { font-family: var(--head); font-size: 1.7rem; color: #fff; }
+
+    .wish {
+      width: min(100% - 2.5rem, 38rem);
+      margin: 0 auto;
+      padding: 1.5rem 0 calc(var(--ground-h) + 4rem);
+      text-align: center;
+    }
+
+    .wish p { margin: 0 0 1.2rem; font-style: italic; color: #cdd4f5; text-shadow: 0 1px 12px #000; }
+
+    .wish button {
+      font-family: var(--head);
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(220, 225, 255, 0.5);
+      padding: 0.9rem 2.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(140, 130, 255, 0.25);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .wish button:hover { background: rgba(255, 255, 255, 0.14); box-shadow: 0 0 44px rgba(150, 140, 255, 0.45); }
+    .wish button:focus-visible { outline: 3px solid #ffe29a; outline-offset: 4px; }
+
+    .wish .note { min-height: 1.7em; margin: 1rem 0 0; color: #ffe29a; font-style: normal; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wish button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <!-- Quarter moon: right half lit, with a softly blended edge and a faint halo -->
+  <svg class="moon" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+        <stop offset="0.25" stop-color="#dfe6ff" stop-opacity="0.28"/>
+        <stop offset="0.55" stop-color="#9fb0ff" stop-opacity="0.08"/>
+        <stop offset="1" stop-color="#9fb0ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="lit" cx="72%" cy="42%" r="70%">
+        <stop offset="0" stop-color="#fffdf3"/>
+        <stop offset="0.65" stop-color="#ece6d0"/>
+        <stop offset="1" stop-color="#b8b39f"/>
+      </radialGradient>
+      <radialGradient id="shade" cx="35%" cy="50%" r="65%">
+        <stop offset="0" stop-color="#1c2135"/>
+        <stop offset="1" stop-color="#0a0c15"/>
+      </radialGradient>
+      <linearGradient id="term" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0.44" stop-color="#000"/>
+        <stop offset="0.56" stop-color="#fff"/>
+      </linearGradient>
+      <mask id="halfMask" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+        <rect width="200" height="200" fill="url(#term)"/>
+      </mask>
+      <filter id="mblur" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2.2"/>
+      </filter>
+      <clipPath id="disc"><circle cx="100" cy="100" r="46"/></clipPath>
+    </defs>
+    <g transform="rotate(-22 100 100)">
+      <circle cx="100" cy="100" r="100" fill="url(#halo)"/>
+      <circle cx="100" cy="100" r="46" fill="url(#shade)"/>
+      <g mask="url(#halfMask)">
+        <circle cx="100" cy="100" r="46" fill="url(#lit)"/>
+        <g clip-path="url(#disc)" filter="url(#mblur)" opacity="0.5">
+          <ellipse cx="116" cy="82" rx="13" ry="9" fill="#7d7a6e"/>
+          <ellipse cx="128" cy="104" rx="11" ry="8" fill="#85826f"/>
+          <ellipse cx="112" cy="122" rx="9" ry="6" fill="#8b8775"/>
+          <circle cx="130" cy="126" r="5" fill="#6f6c60"/>
+          <circle cx="120" cy="66" r="4" fill="#767366"/>
+        </g>
+      </g>
+    </g>
+  </svg>
+
+  <!-- Distant treeline -->
+  <div class="ground" aria-hidden="true">
+    <svg id="trees" viewBox="0 0 1440 120" preserveAspectRatio="xMidYMax slice"></svg>
+  </div>
+
+  <main class="page">
+    <header class="hero">
+      <h1><span class="hb">Happy birthday,</span><span class="nm" id="name"></span></h1>
+      <p class="lede" id="lede"></p>
+    </header>
+
+    <section class="letter" id="letter"></section>
+
+    <section class="wish">
+      <p id="wish-line"></p>
+      <button type="button" id="wish-btn">Make a wish</button>
+      <p class="note" id="wish-note" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script>
+    /* ---------- Fill in the words from config.js ---------- */
+    (function () {
+      var C = window.CAPSULE;
+      var $ = function (id) { return document.getElementById(id); };
+
+      document.title = "Happy birthday, " + C.friendName;
+      $("name").textContent = C.friendName;
+      $("lede").textContent = C.lede || "";
+      $("lede").hidden = !C.lede;
+
+      var letter = $("letter");
+      var greet = document.createElement("p");
+      greet.className = "greeting";
+      greet.textContent = "Dear " + C.friendName + ",";
+      letter.appendChild(greet);
+
+      (C.letter || []).forEach(function (text) {
+        var p = document.createElement("p");
+        p.textContent = text.replace(/\{name\}/g, C.friendName);
+        letter.appendChild(p);
+      });
+
+      var sign = document.createElement("p");
+      sign.className = "sign";
+      sign.textContent = C.signOff || "";
+      var from = document.createElement("p");
+      from.className = "from";
+      from.textContent = C.fromName;
+      letter.appendChild(sign);
+      letter.appendChild(from);
+
+      $("wish-line").textContent = C.wishLine || "";
+    })();
+
+    /* ---------- Treeline silhouette ---------- */
+    (function () {
+      var svg = document.getElementById("trees");
+      var seed = 7;
+      function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+      function line(fill, baseY, minH, maxH, minW, maxW) {
+        var d = "M0 120 L0 " + baseY;
+        var x = 0;
+        while (x < 1440) {
+          var w = minW + rnd() * (maxW - minW);
+          var h = minH + rnd() * (maxH - minH);
+          var y = baseY + 5 * Math.sin(x / 170);
+          d += " L" + (x + w * 0.5).toFixed(1) + " " + (y - h).toFixed(1) + " L" + (x + w).toFixed(1) + " " + y.toFixed(1);
+          x += w * 0.85;
+        }
+        d += " L1440 120 Z";
+        var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.setAttribute("d", d);
+        p.setAttribute("fill", fill);
+        svg.appendChild(p);
+      }
+
+      line("#070b1c", 98, 10, 34, 10, 18);   // far trees, slightly lit by the horizon
+      line("#000000", 108, 12, 46, 9, 16);   // near trees, pure black
+    })();
+
+    /* ---------- The night sky ---------- */
+    (function () {
+      var canvas = document.getElementById("sky");
+      var ctx = canvas.getContext("2d");
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var TAU = Math.PI * 2;
+      var W, H, milky, stars = [], sparkles = [], comets = [], meteors = [];
+
+      // Seeded random so the sky looks the same every time (seed is the birthday)
+      function mulberry32(a) {
+        return function () {
+          a |= 0; a = a + 0x6d2b79f5 | 0;
+          var t = Math.imul(a ^ a >>> 15, 1 | a);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      var tints = ["rgb(255,255,255)", "rgb(200,215,255)", "rgb(255,244,220)", "rgb(255,205,160)", "rgb(170,190,255)"];
+      var glows = ["150,130,255", "255,140,215", "120,215,255", "200,170,255"];
+
+      function build() {
+        W = canvas.width = Math.round(window.innerWidth * dpr);
+        H = canvas.height = Math.round(window.innerHeight * dpr);
+        var r = mulberry32(20092026);
+        function gauss() { return (r() + r() + r() + r() - 2) / 2; }
+
+        // Background: black, a touch of deep blue near the horizon, and a faint Milky Way
+        milky = document.createElement("canvas");
+        milky.width = W; milky.height = H;
+        var m = milky.getContext("2d");
+        var bg = m.createLinearGradient(0, 0, 0, H);
+        bg.addColorStop(0, "#000000");
+        bg.addColorStop(0.6, "#02030a");
+        bg.addColorStop(1, "#080d26");
+        m.fillStyle = bg;
+        m.fillRect(0, 0, W, H);
+
+        var ang = -0.8, dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;
+        var cx = W * 0.5, cy = H * 0.5, L = Math.hypot(W, H), bw = Math.min(W, H) * 0.28;
+        var i;
+        m.lineCap = "butt";
+        for (i = 0; i < 10; i++) {
+          m.strokeStyle = "rgba(110,120,210,0.014)";
+          m.lineWidth = bw * 2.2 * (1 - (i / 9) * 0.85);
+          m.beginPath(); m.moveTo(cx - dx * L, cy - dy * L); m.lineTo(cx + dx * L, cy + dy * L); m.stroke();
+        }
+        for (i = 0; i < 5; i++) {
+          m.strokeStyle = "rgba(190,160,200,0.016)";
+          m.lineWidth = bw * (0.9 - i * 0.15);
+          m.beginPath(); m.moveTo(cx - dx * L, cy - dy * L); m.lineTo(cx + dx * L, cy + dy * L); m.stroke();
+        }
+        // Thousands of tiny far-away stars packed along the band
+        var n = Math.min(3200, Math.round(W * H / 1500));
+        for (i = 0; i < n; i++) {
+          var along = (r() * 2 - 1) * L * 0.5, off = gauss() * bw * 0.9;
+          var x = cx + dx * along + nx * off, y = cy + dy * along + ny * off;
+          if (x < 0 || y < 0 || x > W || y > H) continue;
+          var a = 0.06 + r() * 0.4 * (1 - Math.min(1, Math.abs(off) / bw));
+          m.fillStyle = "rgba(" + (190 + r() * 60 | 0) + "," + (200 + r() * 50 | 0) + ",255," + a.toFixed(3) + ")";
+          var s = r() < 0.08 ? dpr * 1.2 : dpr * 0.7;
+          m.fillRect(x, y, s, s);
+        }
+
+        // Individual stars that twinkle
+        stars = [];
+        var count = Math.min(900, Math.round(W * H / (dpr * dpr) / 2400));
+        for (i = 0; i < count; i++) {
+          var p = r();
+          var tint = p < 0.45 ? 0 : p < 0.75 ? 1 : p < 0.9 ? 2 : p < 0.96 ? 3 : 4;
+          stars.push({
+            x: r() * W, y: r() * H * 0.97,
+            r: (0.35 + Math.pow(r(), 6) * 1.7) * dpr,
+            a: 0.3 + r() * 0.6, sp: 0.5 + r() * 2.2, ph: r() * TAU, c: tints[tint]
+          });
+        }
+
+        // Glittering four-point sparkle stars
+        sparkles = [];
+        var sn = window.innerWidth < 600 ? 9 : 16;
+        for (i = 0; i < sn; i++) {
+          sparkles.push({
+            x: (0.04 + r() * 0.92) * W, y: (0.04 + r() * 0.8) * H,
+            r: (6 + r() * 11) * dpr, sp: 0.5 + r() * 1.1, ph: r() * TAU,
+            gl: glows[Math.floor(r() * glows.length)]
+          });
+        }
+      }
+
+      function drawStars(t) {
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i];
+          var tw = reduce ? 1 : 0.65 + 0.35 * Math.sin(t * s.sp + s.ph);
+          ctx.fillStyle = s.c;
+          ctx.globalAlpha = s.a * tw;
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, TAU); ctx.fill();
+          if (s.r > 1.3 * dpr) {
+            ctx.globalAlpha = 0.07 * tw;
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 3.2, 0, TAU); ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function fourPoint(x, y, r, pinch) {
+        var w = r * pinch;
+        ctx.beginPath();
+        ctx.moveTo(x, y - r);
+        ctx.quadraticCurveTo(x + w, y - w, x + r, y);
+        ctx.quadraticCurveTo(x + w, y + w, x, y + r);
+        ctx.quadraticCurveTo(x - w, y + w, x - r, y);
+        ctx.quadraticCurveTo(x - w, y - w, x, y - r);
+        ctx.fill();
+      }
+
+      function drawSparkles(t) {
+        for (var i = 0; i < sparkles.length; i++) {
+          var s = sparkles[i];
+          var k = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * s.sp + s.ph);
+          var r = s.r * (0.5 + 0.5 * k);
+          var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r * 2.4);
+          g.addColorStop(0, "rgba(" + s.gl + "," + (0.55 * k).toFixed(3) + ")");
+          g.addColorStop(1, "rgba(" + s.gl + ",0)");
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(s.x, s.y, r * 2.4, 0, TAU); ctx.fill();
+
+          ctx.fillStyle = "rgba(255,255,255," + (0.6 + 0.4 * k).toFixed(3) + ")";
+          fourPoint(s.x, s.y, r, 0.14);
+          ctx.save();
+          ctx.translate(s.x, s.y); ctx.rotate(Math.PI / 4);
+          ctx.fillStyle = "rgba(255,255,255," + (0.35 * k).toFixed(3) + ")";
+          fourPoint(0, 0, r * 0.55, 0.16);
+          ctx.restore();
+        }
+      }
+
+      /* Comets: slow, with a straight blue-white ion tail and a warmer dust tail */
+      function spawnComet() {
+        var right = Math.random() < 0.5, a = 0.3 + Math.random() * 0.35, sp = (60 + Math.random() * 30) * dpr;
+        comets.push({
+          x: right ? W * (0.7 + Math.random() * 0.35) : W * (-0.05 + Math.random() * 0.3),
+          y: H * (0.02 + Math.random() * 0.3),
+          vx: (right ? -1 : 1) * Math.cos(a) * sp, vy: Math.sin(a) * sp,
+          len: (240 + Math.random() * 160) * dpr
+        });
+      }
+
+      function tail(c, len, halfW, spread, c0, c1) {
+        var sp = Math.hypot(c.vx, c.vy), ux = -c.vx / sp, uy = -c.vy / sp, nx = -uy, ny = ux;
+        var ex = c.x + ux * len + nx * spread, ey = c.y + uy * len + ny * spread;
+        var g = ctx.createLinearGradient(c.x, c.y, ex, ey);
+        g.addColorStop(0, c0); g.addColorStop(1, c1);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(c.x + nx * halfW, c.y + ny * halfW);
+        ctx.lineTo(ex, ey);
+        ctx.lineTo(c.x - nx * halfW, c.y - ny * halfW);
+        ctx.closePath(); ctx.fill();
+      }
+
+      function drawComet(c) {
+        tail(c, c.len * 0.7, 7 * dpr, 24 * dpr, "rgba(255,230,190,0.4)", "rgba(255,200,140,0)");
+        tail(c, c.len, 2.6 * dpr, 0, "rgba(190,225,255,0.85)", "rgba(120,170,255,0)");
+        var g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, 16 * dpr);
+        g.addColorStop(0, "rgba(255,255,255,0.95)");
+        g.addColorStop(0.35, "rgba(170,210,255,0.35)");
+        g.addColorStop(1, "rgba(170,210,255,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(c.x, c.y, 16 * dpr, 0, TAU); ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.beginPath(); ctx.arc(c.x, c.y, 2.3 * dpr, 0, TAU); ctx.fill();
+      }
+
+      /* Shooting stars: quick streaks */
+      function spawnMeteor(big) {
+        var dir = Math.random() < 0.5 ? 1 : -1, a = 0.45 + Math.random() * 0.3;
+        var sp = (big ? 1300 : 900 + Math.random() * 500) * dpr;
+        meteors.push({
+          x: dir > 0 ? W * Math.random() * 0.6 : W * (0.4 + Math.random() * 0.6),
+          y: H * Math.random() * 0.4,
+          vx: dir * Math.cos(a) * sp, vy: Math.sin(a) * sp,
+          len: (big ? 280 : 110 + Math.random() * 90) * dpr,
+          life: 0, max: big ? 1.3 : 0.6 + Math.random() * 0.4
+        });
+      }
+
+      function drawMeteor(m) {
+        var sp = Math.hypot(m.vx, m.vy);
+        var tx = m.x - (m.vx / sp) * m.len, ty = m.y - (m.vy / sp) * m.len;
+        var g = ctx.createLinearGradient(tx, ty, m.x, m.y);
+        g.addColorStop(0, "rgba(200,220,255,0)");
+        g.addColorStop(1, "rgba(255,255,255,1)");
+        ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, m.life / m.max));
+        ctx.strokeStyle = g; ctx.lineWidth = 1.8 * dpr; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(m.x, m.y); ctx.stroke();
+        ctx.fillStyle = "#fff";
+        ctx.beginPath(); ctx.arc(m.x, m.y, 1.6 * dpr, 0, TAU); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      var t0 = performance.now(), last = t0, nextComet = 1.2, nextMeteor = 4;
+
+      function frame(now) {
+        var t = (now - t0) / 1000, dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        ctx.globalAlpha = 1;
+        ctx.drawImage(milky, 0, 0);
+        drawStars(t);
+        drawSparkles(t);
+
+        if (t > nextComet && comets.length < 2) { spawnComet(); nextComet = t + 9 + Math.random() * 9; }
+        if (t > nextMeteor) { spawnMeteor(false); nextMeteor = t + 4 + Math.random() * 6; }
+
+        comets = comets.filter(function (c) {
+          c.x += c.vx * dt; c.y += c.vy * dt;
+          drawComet(c);
+          return c.x > -c.len * 1.3 && c.x < W + c.len * 1.3 && c.y < H + c.len;
+        });
+        meteors = meteors.filter(function (m) {
+          m.x += m.vx * dt; m.y += m.vy * dt; m.life += dt;
+          drawMeteor(m);
+          return m.life < m.max;
+        });
+        requestAnimationFrame(frame);
+      }
+
+      function still() {
+        ctx.globalAlpha = 1;
+        ctx.drawImage(milky, 0, 0);
+        drawStars(0);
+        drawSparkles(0);
+      }
+
+      build();
+      if (reduce) still(); else requestAnimationFrame(frame);
+
+      var rt;
+      window.addEventListener("resize", function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () { build(); if (reduce) still(); }, 150);
+      });
+
+      /* The wish button sends a bright shooting star across the sky */
+      var btn = document.getElementById("wish-btn");
+      var note = document.getElementById("wish-note");
+      btn.addEventListener("click", function () {
+        note.textContent = "Wish sent. Keep it a secret.";
+        if (reduce) return;
+        spawnMeteor(true);
+      });
+    })();
+  </script>
+</body>
+</html>

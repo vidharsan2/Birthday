@@ -176,17 +176,10 @@
     <noscript><p class="sub">This page needs JavaScript to run the countdown.</p></noscript>
   </main>
 
+  <script src="config.js"></script>
   <script>
-    /* ---------- EDIT THESE ---------- */
-    var CONFIG = {
-      friendName: "Your Friend",
-      // 20 Sep 2026, 8:45 PM. No timezone = the clock on the viewer's device.
-      unlockAt: "2026-09-20T20:45:00",
-      // The page the button opens (your main page)
-      buttonLink: "main.html",
-      buttonText: "Click here"
-    };
-    /* -------------------------------- */
+    // All names, the unlock time, and the button link live in config.js
+    var CONFIG = window.CAPSULE;
 
     (function () {
       var $ = function (id) { return document.getElementById(id); };
@@ -203,7 +196,7 @@
       });
 
       var btn = $("btn");
-      btn.href = CONFIG.buttonLink;
+      btn.href = CONFIG.buttonLink + (testSeconds > 0 ? "?test" : "");
       btn.textContent = CONFIG.buttonText;
 
       var els = { days: $("days"), hours: $("hours"), mins: $("mins"), secs: $("secs") };
