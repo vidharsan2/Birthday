@@ -2,11 +2,11 @@
    EDIT THIS FILE. Both pages read everything from here.
    ------------------------------------------------------------------ */
 window.CAPSULE = {
-  // Her name as it appears on both pages (the eye emoji is part of it)
-  friendName: "Kannuhh 👁️",
+  // Her name as it appears on the main page
+  friendName: "Kannuhh",
 
-  // Your name, shown at the end of the letter. CHANGE THIS.
-  fromName: "Your Name",
+  // Your name, shown at the end of the letter.
+  fromName: "Vishooow",
 
   // The PIN she needs to open the site. Digits only, any length.
   // Only YOU should know this — tell her separately (in person, a text, etc).
@@ -20,12 +20,13 @@ window.CAPSULE = {
   lede: "Look up for a second. Tonight's sky is yours.",
 
   // The letter. One string per paragraph. Edit freely.
+  // Wrap any phrase in **double stars** and it gets highlighted on the page.
   letter: [
-    "Happy birthday. I tried a lot of ways to say what I wanted to say, and in the end the night sky was the closest I could get to it.",
-    "Most people pass through your life like street lights. Bright for a moment, easy to forget once you turn the corner. You are not like that. You are more like the stars: there before I noticed you, steady when everything else goes dark, and the one thing I can always find when I look up.",
-    "You make ordinary days feel like they matter. You laugh in a way that lightens a whole room, you listen even when it's inconvenient, and you care about people without keeping score. I don't think you know how much of yourself you give away, so let me say it plainly: it is noticed, and it means more than you think.",
-    "I hope this year is kind to you. I hope the good things arrive right on time, the hard things pass quickly, and the people who love you say it out loud more often than they do now. And on the days you forget how far you've come, remember that the sky never asks you to be more than you already are.",
-    "Thank you for being my friend. Rare things are hard to come by, and you are one of them, the kind of bright thing people wait years to see. I'm lucky I was looking up when you came along.",
+    "Happy birthday. I tried a lot of ways to say what I wanted to say, and in the end the **night sky was the closest I could get to it**.",
+    "Most people pass through your life like street lights. Bright for a moment, easy to forget once you turn the corner. **You are not like that.** You are more like the stars: there before I noticed you, steady when everything else goes dark, and **the one thing I can always find when I look up**.",
+    "You make ordinary days feel like they matter. You laugh in a way that lightens a whole room, you listen even when it's inconvenient, and you care about people without keeping score. I don't think you know how much of yourself you give away, so let me say it plainly: **it is noticed, and it means more than you think**.",
+    "I hope this year is kind to you. I hope the good things arrive right on time, the hard things pass quickly, and the people who love you say it out loud more often than they do now. And on the days you forget how far you've come, remember that **the sky never asks you to be more than you already are**.",
+    "**Thank you for being my friend.** Rare things are hard to come by, and you are one of them, the kind of bright thing people wait years to see. **I'm lucky I was looking up when you came along.**",
     "Happy birthday, {name}. Go on, make a wish.",
   ],
 
