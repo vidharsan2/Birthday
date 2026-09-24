@@ -11,11 +11,11 @@
 
   <script src="config.js"></script>
   <script>
-    // Keep this page closed until the unlock time.
-    // ?preview lets you look at it early. ?test comes from the test countdown.
+    // Keep this page closed until the right PIN has been entered on index.html.
+    // ?preview lets you look at it early while you're working on it.
     (function () {
       var p = new URLSearchParams(location.search);
-      var open = Date.now() >= new Date(window.CAPSULE.unlockAt).getTime() || p.has("preview") || p.has("test");
+      var open = sessionStorage.getItem("capsuleUnlocked") === "1" || p.has("preview");
       if (!open) location.replace("index.html");
     })();
   </script>

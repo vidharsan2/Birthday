@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Something is waiting for you</title>
+  <title>Locked</title>
   <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="config.js"></script>
   <style>
     :root {
       --night: #0a2540;
-      --night-2: #123a63;
       --coral: #ff6b8b;
       --butter: #ffe29a;
       --mint: #7fe5c4;
@@ -41,239 +41,198 @@
     }
 
     main {
-      width: min(100% - 2.5rem, 52rem);
+      width: min(100% - 2.5rem, 28rem);
       padding-block: 3rem;
       text-align: center;
     }
 
+    .lock {
+      margin: 0 auto 1.5rem;
+      width: clamp(48px, 12vw, 60px);
+      height: auto;
+      opacity: 0.9;
+    }
+
     h1 {
-      margin: 0 auto 0.75rem;
-      max-width: 18ch;
+      margin: 0 0 0.6rem;
       font-family: var(--display);
       font-weight: 700;
-      font-size: clamp(1.5rem, 5vw, 2.6rem);
-      line-height: 1.15;
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      line-height: 1.2;
       letter-spacing: -0.01em;
       text-wrap: balance;
     }
 
     .sub {
-      margin: 0 0 clamp(2rem, 6vw, 3.5rem);
+      margin: 0 0 2.25rem;
       color: var(--snow-dim);
     }
 
-    /* Countdown */
-    .clock {
+    form { display: grid; justify-items: center; gap: 1.5rem; }
+
+    .pin-boxes {
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: clamp(0.35rem, 2vw, 1rem);
+      gap: clamp(0.5rem, 2.5vw, 0.9rem);
+    }
+
+    .pin-boxes input {
+      width: clamp(2.6rem, 11vw, 3.4rem);
+      height: clamp(3.2rem, 13vw, 4rem);
+      text-align: center;
       font-family: var(--display);
-      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.5rem, 6vw, 2rem);
+      color: var(--snow);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(185, 199, 220, 0.4);
+      border-radius: 14px;
+      caret-color: var(--coral);
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .unit { display: flex; flex-direction: column; align-items: center; }
-    .unit[hidden] + .sep { display: none; }
-
-    .num {
-      font-weight: 700;
-      font-size: clamp(2.1rem, 11vw, 5.6rem);
-      line-height: 1;
-      min-width: 2ch;
-      letter-spacing: -0.03em;
-      transition: color 0.6s ease;
+    .pin-boxes input:focus {
+      outline: none;
+      border-color: var(--coral);
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .label {
-      margin-top: 0.7rem;
-      font-family: var(--body);
-      font-weight: 500;
-      font-size: 0.95rem;
-      color: var(--snow-dim);
+    .shake { animation: shake 0.45s ease; }
+    @keyframes shake {
+      10%, 90% { transform: translateX(-1px); }
+      20%, 80% { transform: translateX(3px); }
+      30%, 50%, 70% { transform: translateX(-7px); }
+      40%, 60% { transform: translateX(7px); }
     }
-
-    .sep {
-      font-weight: 700;
-      font-size: clamp(2.1rem, 11vw, 5.6rem);
-      line-height: 1;
-      color: var(--coral);
-      animation: blink 1s steps(1, end) infinite;
-    }
-
-    @keyframes blink { 50% { opacity: 0.2; } }
-
-    /* Reveal */
-    .reveal {
-      margin-top: clamp(2.25rem, 7vw, 3.5rem);
-      min-height: 4.5rem;
-    }
+    .shake input { border-color: var(--coral); }
 
     .btn {
       display: inline-block;
-      padding: 1.05rem 2.6rem;
+      padding: 1rem 2.6rem;
       border-radius: 999px;
       background: var(--coral);
       color: var(--night);
       font-family: var(--display);
       font-weight: 700;
-      font-size: 1.05rem;
-      text-decoration: none;
+      font-size: 1.02rem;
+      border: none;
+      cursor: pointer;
       box-shadow: 0 10px 30px rgba(255, 107, 139, 0.35);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
     }
-
     .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(255, 107, 139, 0.5); }
     .btn:active { transform: translateY(0); }
     .btn:focus-visible { outline: 3px solid var(--butter); outline-offset: 4px; }
+    .btn[disabled] { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
 
-    .btn.pop { animation: pop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+    .msg { min-height: 1.4em; margin: 0; font-size: 0.95rem; }
+    .msg.err { color: var(--coral); }
+    .msg.ok { color: var(--mint); }
 
-    @keyframes pop {
-      from { opacity: 0; transform: scale(0.6) translateY(12px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* Countdown finished */
-    body.done .num { color: var(--butter); }
-    body.done .sep { animation: none; opacity: 1; color: var(--mint); }
-
-    #confetti {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
-    }
+    body.unlocked main { animation: fade 0.5s ease both; }
+    @keyframes fade { from { opacity: 1; } to { opacity: 0; } }
 
     @media (prefers-reduced-motion: reduce) {
-      .sep { animation: none; }
-      .btn.pop { animation: none; }
+      .shake { animation: none; }
       .btn { transition: none; }
+      body.unlocked main { animation: none; }
     }
   </style>
 </head>
 <body>
-  <canvas id="confetti" aria-hidden="true"></canvas>
-
   <main>
-    <h1 id="title">Something is waiting for you</h1>
-    <p class="sub" id="sub"></p>
+    <svg class="lock" viewBox="0 0 48 56" aria-hidden="true" focusable="false">
+      <rect x="1" y="24" width="46" height="31" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <path d="M12 24V16a12 12 0 0 1 24 0v8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="24" cy="37" r="4" fill="currentColor"/>
+      <rect x="22.4" y="39" width="3.2" height="8" rx="1.4" fill="currentColor"/>
+    </svg>
 
-    <div class="clock" role="timer" aria-label="Countdown">
-      <div class="unit" id="u-days" hidden><span class="num" id="days">00</span><span class="label">days</span></div>
-      <span class="sep" aria-hidden="true">:</span>
-      <div class="unit"><span class="num" id="hours">00</span><span class="label">hours</span></div>
-      <span class="sep" aria-hidden="true">:</span>
-      <div class="unit"><span class="num" id="mins">00</span><span class="label">minutes</span></div>
-      <span class="sep" aria-hidden="true">:</span>
-      <div class="unit"><span class="num" id="secs">00</span><span class="label">seconds</span></div>
-    </div>
+    <h1 id="title">This one needs a PIN</h1>
+    <p class="sub" id="sub">Only one person knows it. Ask them.</p>
 
-    <div class="reveal">
-      <a class="btn" id="btn" href="main.html" hidden>Click here</a>
-    </div>
-    <noscript><p class="sub">This page needs JavaScript to run the countdown.</p></noscript>
+    <form id="form" autocomplete="off">
+      <div class="pin-boxes" id="boxes"></div>
+      <p class="msg" id="msg" aria-live="polite"></p>
+      <button class="btn" id="go" type="submit" disabled>Unlock</button>
+    </form>
   </main>
 
-  <script src="config.js"></script>
   <script>
-    // All names, the unlock time, and the button link live in config.js
-    var CONFIG = window.CAPSULE;
-
     (function () {
-      var $ = function (id) { return document.getElementById(id); };
-      var params = new URLSearchParams(location.search);
+      var C = window.CAPSULE;
+      var LEN = (C.pin || "0000").length;
+      var boxes = document.getElementById("boxes");
+      var form = document.getElementById("form");
+      var msg = document.getElementById("msg");
+      var go = document.getElementById("go");
+      var inputs = [];
 
-      // ?test=10 runs a 10-second countdown so you can try it
-      var testSeconds = parseInt(params.get("test"), 10);
-      var target = testSeconds > 0 ? Date.now() + testSeconds * 1000 : new Date(CONFIG.unlockAt).getTime();
+      document.getElementById("title").textContent = C.pinTitle || "This one needs a PIN";
+      document.getElementById("sub").textContent = C.pinHint || "Only one person knows it. Ask them.";
 
-      $("title").textContent = "Something is waiting for " + CONFIG.friendName;
-      document.title = "Something is waiting for " + CONFIG.friendName;
-      $("sub").textContent = "It unlocks on " + new Date(target).toLocaleString(undefined, {
-        dateStyle: "long", timeStyle: "short"
+      for (var i = 0; i < LEN; i++) {
+        var inp = document.createElement("input");
+        inp.type = "tel";
+        inp.inputMode = "numeric";
+        inp.pattern = "[0-9]*";
+        inp.maxLength = 1;
+        inp.autocomplete = "off";
+        inp.setAttribute("aria-label", "PIN digit " + (i + 1));
+        boxes.appendChild(inp);
+        inputs.push(inp);
+      }
+
+      function currentPin() {
+        return inputs.map(function (i) { return i.value; }).join("");
+      }
+
+      function updateGo() {
+        go.disabled = currentPin().length !== LEN;
+      }
+
+      inputs.forEach(function (inp, idx) {
+        inp.addEventListener("input", function () {
+          inp.value = inp.value.replace(/[^0-9]/g, "").slice(-1);
+          if (inp.value && idx < LEN - 1) inputs[idx + 1].focus();
+          updateGo();
+          msg.textContent = "";
+          msg.className = "msg";
+        });
+        inp.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace" && !inp.value && idx > 0) inputs[idx - 1].focus();
+        });
+        inp.addEventListener("paste", function (e) {
+          var text = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "");
+          if (!text) return;
+          e.preventDefault();
+          text.slice(0, LEN).split("").forEach(function (ch, i) { if (inputs[i]) inputs[i].value = ch; });
+          var next = Math.min(text.length, LEN) - 1;
+          if (inputs[next]) inputs[next].focus();
+          updateGo();
+        });
       });
 
-      var btn = $("btn");
-      btn.href = CONFIG.buttonLink + (testSeconds > 0 ? "?test" : "");
-      btn.textContent = CONFIG.buttonText;
-
-      var els = { days: $("days"), hours: $("hours"), mins: $("mins"), secs: $("secs") };
-      var daysUnit = $("u-days");
-      function pad(n) { return String(n).padStart(2, "0"); }
-
-      var finished = false;
-      var timer;
-
-      function finish(animate) {
-        finished = true;
-        clearInterval(timer);
-        document.body.classList.add("done");
-        $("title").textContent = "Happy birthday, " + CONFIG.friendName + "!";
-        $("sub").textContent = "Your surprise is ready.";
-        btn.hidden = false;
-        if (animate) {
-          btn.classList.add("pop");
-          confetti();
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (currentPin() === (C.pin || "")) {
+          msg.textContent = "That's the one.";
+          msg.className = "msg ok";
+          go.disabled = true;
+          sessionStorage.setItem("capsuleUnlocked", "1");
+          document.body.classList.add("unlocked");
+          setTimeout(function () { location.href = "main.html"; }, 500);
+        } else {
+          msg.textContent = "Not quite. Try again.";
+          msg.className = "msg err";
+          boxes.classList.remove("shake");
+          void boxes.offsetWidth;
+          boxes.classList.add("shake");
+          inputs.forEach(function (i) { i.value = ""; });
+          inputs[0].focus();
+          updateGo();
         }
-      }
+      });
 
-      function tick() {
-        var left = Math.max(0, target - Date.now());
-        var s = Math.floor(left / 1000);
-        var d = Math.floor(s / 86400);
-        daysUnit.hidden = d === 0;
-        els.days.textContent = pad(d);
-        els.hours.textContent = pad(Math.floor((s % 86400) / 3600));
-        els.mins.textContent = pad(Math.floor((s % 3600) / 60));
-        els.secs.textContent = pad(s % 60);
-        if (left === 0 && !finished) finish(true);
-      }
-
-      function confetti() {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        var c = $("confetti");
-        var ctx = c.getContext("2d");
-        var dpr = window.devicePixelRatio || 1;
-        var w = (c.width = window.innerWidth * dpr);
-        var h = (c.height = window.innerHeight * dpr);
-        var colors = ["#ff6b8b", "#ffe29a", "#7fe5c4", "#fff8f0"];
-        var bits = [];
-        for (var i = 0; i < 150; i++) {
-          bits.push({
-            x: Math.random() * w,
-            y: -Math.random() * h * 0.6,
-            r: (4 + Math.random() * 6) * dpr,
-            vx: (Math.random() - 0.5) * 2 * dpr,
-            vy: (2 + Math.random() * 3) * dpr,
-            rot: Math.random() * 6.28,
-            vr: (Math.random() - 0.5) * 0.2,
-            c: colors[Math.floor(Math.random() * colors.length)]
-          });
-        }
-        var start = performance.now();
-        function frame(now) {
-          ctx.clearRect(0, 0, w, h);
-          var alive = false;
-          bits.forEach(function (p) {
-            p.x += p.vx; p.y += p.vy; p.rot += p.vr;
-            if (p.y < h + 20 * dpr) alive = true;
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            ctx.fillStyle = p.c;
-            ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2);
-            ctx.restore();
-          });
-          if (alive && now - start < 7000) requestAnimationFrame(frame);
-          else ctx.clearRect(0, 0, w, h);
-        }
-        requestAnimationFrame(frame);
-      }
-
-      tick();
-      if (!finished) timer = setInterval(tick, 250);
+      inputs[0].focus();
     })();
   </script>
 </body>

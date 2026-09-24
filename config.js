@@ -8,12 +8,13 @@ window.CAPSULE = {
   // Your name, shown at the end of the letter. CHANGE THIS.
   fromName: "Your Name",
 
-  // 20 Sep 2026, 9:05 PM. No timezone = the clock on the device that opens it.
-  unlockAt: "2026-09-20T21:05:00",
+  // The PIN she needs to open the site. Digits only, any length.
+  // Only YOU should know this — tell her separately (in person, a text, etc).
+  pin: "0906",
 
-  // Front page button
-  buttonLink: "main.html",
-  buttonText: "Click here",
+  // Text on the lock page. Change these if you want, or leave as is.
+  pinTitle: "This one needs a PIN",
+  pinHint: "Only one person knows it. Ask them.",
 
   // One line under her name on the main page
   lede: "Look up for a second. Tonight's sky is yours.",
