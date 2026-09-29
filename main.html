@@ -195,6 +195,97 @@
 
     .wish .note { min-height: 1.7em; margin: 1rem 0 0; color: #ffe29a; font-style: normal; }
 
+    /* ---------- Photo gallery ---------- */
+    .gallery {
+      width: min(100% - 2.5rem, 46rem);
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+      text-align: center;
+    }
+
+    .gallery-title {
+      font-family: var(--head);
+      font-weight: 400;
+      font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+      color: #fff;
+      margin: 0 0 2rem;
+      text-shadow: 0 1px 14px rgba(0, 0, 0, 0.9);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(1rem, 3vw, 2rem);
+      justify-items: center;
+    }
+
+    @media (max-width: 540px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+
+    .photo {
+      background: #f7f3ea;
+      padding: 0.6rem 0.6rem 1.1rem;
+      border-radius: 3px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transform: rotate(var(--tilt, -2deg));
+      max-width: 100%;
+      transition: transform 0.25s ease;
+    }
+    .photo:hover { transform: rotate(0deg) scale(1.03); }
+    .gallery-grid .photo:nth-child(even) { --tilt: 2.5deg; }
+    .gallery-grid .photo:nth-child(3n) { --tilt: -1.5deg; }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      height: clamp(11rem, 34vw, 16rem);
+      object-fit: cover;
+      border-radius: 1px;
+      background: #1c1c1c;
+    }
+
+    .photo .cap {
+      margin: 0.7rem 0.2rem 0;
+      font-family: var(--text);
+      font-size: 1.35rem;
+      line-height: 1.2;
+      color: #3a3630;
+    }
+
+    /* ---------- Music toggle ---------- */
+    .music-btn {
+      position: fixed;
+      top: max(1.1rem, env(safe-area-inset-top, 0px));
+      left: 1.1rem;
+      z-index: 5;
+      width: 2.9rem;
+      height: 2.9rem;
+      border-radius: 50%;
+      border: 1px solid rgba(220, 225, 255, 0.5);
+      background: rgba(10, 12, 24, 0.55);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(140, 130, 255, 0.2);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .music-btn:hover { background: rgba(20, 24, 44, 0.75); box-shadow: 0 0 30px rgba(150, 140, 255, 0.4); }
+    .music-btn:focus-visible { outline: 3px solid #ffe29a; outline-offset: 3px; }
+    .music-btn svg { width: 1.3rem; height: 1.3rem; }
+    .music-btn .bars { display: none; }
+    .music-btn.playing .muted-icon { display: none; }
+    .music-btn.playing .bars { display: block; }
+    .music-btn:not(.playing) .bars { display: none; }
+    .music-btn:not(.playing) .muted-icon { display: block; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .photo { transition: none; }
+      .music-btn { transition: none; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .wish button { transition: none; }
       .letter .hl { transition: none; }
@@ -272,6 +363,21 @@
     </g>
   </svg>
 
+  <!-- Background music: starts muted (browsers block audio with sound before you interact), tap to unmute -->
+  <audio id="bgm" loop preload="none"></audio>
+  <button type="button" class="music-btn" id="music-btn" aria-label="Play music" hidden>
+    <svg class="muted-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+      <line x1="16" y1="9" x2="21" y2="14"/>
+      <line x1="21" y1="9" x2="16" y2="14"/>
+    </svg>
+    <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9v6h4l5 5V4L8 9H4z"/>
+      <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+      <path d="M18 6a8.5 8.5 0 0 1 0 12"/>
+    </svg>
+  </button>
+
   <!-- Distant treeline -->
   <div class="ground" aria-hidden="true">
     <svg id="trees" viewBox="0 0 1440 120" preserveAspectRatio="xMidYMax slice"></svg>
@@ -284,6 +390,11 @@
     </header>
 
     <section class="letter" id="letter"></section>
+
+    <section class="gallery" id="gallery" hidden>
+      <h2 class="gallery-title" id="gallery-title"></h2>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
 
     <section class="wish">
       <p id="wish-line"></p>
@@ -349,6 +460,63 @@
       letter.appendChild(from);
 
       $("wish-line").textContent = C.wishLine || "";
+
+      // Photo gallery — reads C.photos, an array of { src, caption }
+      var photos = (C.photos || []).filter(function (p) { return p && p.src; });
+      if (photos.length) {
+        $("gallery").hidden = false;
+        $("gallery-title").textContent = C.galleryTitle || "A few of my favorites";
+        var grid = $("gallery-grid");
+        photos.forEach(function (p) {
+          var fig = document.createElement("figure");
+          fig.className = "photo";
+          var img = document.createElement("img");
+          img.src = p.src;
+          img.loading = "lazy";
+          img.alt = p.caption || "";
+          img.onerror = function () { fig.remove(); };
+          fig.appendChild(img);
+          if (p.caption) {
+            var cap = document.createElement("figcaption");
+            cap.className = "cap";
+            cap.textContent = p.caption;
+            fig.appendChild(cap);
+          }
+          grid.appendChild(fig);
+        });
+      }
+    })();
+
+    /* ---------- Background music ---------- */
+    (function () {
+      var C = window.CAPSULE;
+      if (!C.song) return;
+      var audio = document.getElementById("bgm");
+      var btn = document.getElementById("music-btn");
+      audio.src = C.song;
+      audio.volume = typeof C.songVolume === "number" ? C.songVolume : 0.5;
+      audio.muted = true;
+      btn.hidden = false;
+
+      // Muted autoplay is allowed by browsers; real sound needs a tap, which is what the button is for.
+      var startPromise = audio.play().catch(function () { /* will retry on tap */ });
+
+      function setPlaying(on) {
+        btn.classList.toggle("playing", on);
+        btn.setAttribute("aria-label", on ? "Mute music" : "Play music");
+      }
+      setPlaying(false);
+
+      btn.addEventListener("click", function () {
+        var wantOn = audio.muted || audio.paused;
+        if (wantOn) {
+          audio.muted = false;
+          audio.play().then(function () { setPlaying(true); }).catch(function () { setPlaying(false); });
+        } else {
+          audio.muted = true;
+          setPlaying(false);
+        }
+      });
     })();
 
     /* ---------- Treeline silhouette ---------- */

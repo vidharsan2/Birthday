@@ -35,4 +35,28 @@ window.CAPSULE = {
 
   // Text above the wish button
   wishLine: "Every good night sky has a shooting star.",
+
+  // ------------------------------------------------------------
+  // PHOTOS (optional). Make a folder named "photos" right next to
+  // this file (next to index.html, main.html, config.js), put your
+  // images inside it, then list them below.
+  // "caption" is optional — leave it as "" for no caption on a photo.
+  // Leave the whole array empty ( photos: [] ) to skip this section.
+  // ------------------------------------------------------------
+  photos: [
+    // { src: "photos/1.jpg", caption: "that one weekend" },
+    // { src: "photos/2.jpg", caption: "" },
+  ],
+
+  // Heading shown above the photos (only appears if photos isn't empty)
+  galleryTitle: "A few of my favorites",
+
+  // ------------------------------------------------------------
+  // SONG (optional). Put an mp3 file next to this file and name
+  // it below. Leave it as "" for no music and no music button.
+  // It starts muted (browsers require that) — there's a small
+  // speaker button in the top-left corner of the page to turn it on.
+  // ------------------------------------------------------------
+  song: "",        // e.g. "song.mp3"
+  songVolume: 0.5,  // 0 (silent) to 1 (full volume)
 };
